@@ -58,7 +58,7 @@ if not os.path.exists("data"):
     os.mkdir("data")
 
 for artist_name in artists_name:
-    artist = genius.search_artist(artist_name, max_songs=10, sort="title")
+    artist = genius.search_artist(artist_name, max_songs=500, sort="title")
 
     for song in artist.songs:
         if not os.path.exists(os.path.join("data", artist.name)):
