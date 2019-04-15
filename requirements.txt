@@ -1,0 +1,5 @@
+unidecode
+lyricsgenius
+lxml
+beautifulsoup4
+numpy
