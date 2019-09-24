@@ -52,20 +52,20 @@ artists_name_written = ['lomepal', 'iam', 'romeo elvis', 'pnl', 'jul', 'vald', '
 artists_name = np.unique(artists_name_written+artists_name_scraped)
 
 #%%
-# Create folder data if it does not exist
-if not os.path.exists("data"):
-    print("Creating folder data")
-    os.mkdir("data")
+# Create folder torchtext-tuto if it does not exist
+if not os.path.exists("torchtext-tuto"):
+    print("Creating folder torchtext-tuto")
+    os.mkdir("torchtext-tuto")
 
 for artist_name in artists_name:
     artist = genius.search_artist(artist_name, max_songs=500, sort="title")
 
     for song in artist.songs:
-        if not os.path.exists(os.path.join("data", artist.name)):
-            print("Creating folder data/" + artist.name)
-            os.mkdir(os.path.join("data", artist.name))
+        if not os.path.exists(os.path.join("torchtext-tuto", artist.name)):
+            print("Creating folder torchtext-tuto/" + artist.name)
+            os.mkdir(os.path.join("torchtext-tuto", artist.name))
 
-        song.save_lyrics(os.path.join("data", artist.name, song.title), overwrite='y')
+        song.save_lyrics(os.path.join("torchtext-tuto", artist.name, song.title), overwrite='y')
 
 
 """
@@ -75,6 +75,6 @@ headers = {'Authorization': "Bearer "+secret['client_access_token']}
 search_url = base_url + "/search"
 song_title = "Back"
 #artist_name = "Alkpote"
-data = {'q': song_title}
-response = requests.get(search_url, data=data, headers=headers)
+torchtext-tuto = {'q': song_title}
+response = requests.get(search_url, torchtext-tuto=torchtext-tuto, headers=headers)
 """

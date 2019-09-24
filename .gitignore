@@ -2,3 +2,5 @@ secret.json
 data/*
 *.zip
 .vector_cache/*.txt
+.vector_cache/*.txt.pt
+
