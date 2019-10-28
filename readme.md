@@ -1,38 +1,30 @@
 
-http://mlexplained.com/2018/02/15/language-modeling-tutorial-in-torchtext-practical-torchtext-part-2/
 ## Librairies
-
 -torchtext
 
--spacy ??
 
--gensim ??
+### 1. Language modeling
 
+#### 1.1 Basic functionning
 
-## Ideas
-
-### 1 Begin with simplier tasks
-
--text classification : rap or rock or ... ?
-
--
+-Language modeling task on rap data with LSTM
 
 
-### 2. Make it work
+#### 1.2 Add ons
 
--Language modeling task on rap data
+- BERT
 
--Use W2V as embedding
----> Dataviz du RAP
+- question : ligne par ligne ou mot par mot ???
 
-BERT
-
-question : ligne par ligne ou mot par mot ???
-
-### 3. Improvements
-
--Regularization specific to rap (rhyme ?)
+- Rhyme ? Adds this to prediction, or as regularization ?
 
 -Preprocess better the data with verlan ???
 
--Make it French
+- French
+
+### 2 Explore other tasks
+
+-text classification : rap or rock or ... ?
+
+-Dataviz of RAP : insults / thees / gangsta...
+    - W2V for embedding of songs, and find similar songs ??? 

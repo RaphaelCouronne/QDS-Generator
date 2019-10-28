@@ -2,4 +2,6 @@ unidecode
 lyricsgenius
 lxml
 beautifulsoup4
-numpy
+pandas
+torchtext
+matplotlib
