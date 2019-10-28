@@ -5,7 +5,7 @@ from torchtext import data
 
 
 # Parameters
-BATCH_SIZE = 10
+BATCH_SIZE = 50
 
 # Load Data
 df = pd.read_csv(os.path.join("data","pop",'billboard_lyrics_1964-2015.csv'), encoding='latin-1')
@@ -13,7 +13,7 @@ corpus = df.Lyrics.dropna()
 df=df.rename({"Lyrics":"text"}, axis=1)
 
 # Tiny df
-df = df.iloc[:1000,:]
+df = df.iloc[:10000,:]
 
 df.to_csv(os.path.join("data","pop",'billboard.csv'))
 
@@ -52,10 +52,13 @@ train, test = train_test_split(df, test_size=0.8, random_state=42)
 # Corpus dataset
 corpus_train = " ".join(train.dropna()['text'].values)
 corpus_test = " ".join(test.dropna()['text'].values)
-df_corpus_train = pd.DataFrame({"corpus":corpus_train}, index=[0])
-df_corpus_test = pd.DataFrame({"corpus":corpus_test}, index=[0])
+df_corpus_train = pd.DataFrame({"text":corpus_train}, index=[0])
+df_corpus_test = pd.DataFrame({"text":corpus_test}, index=[0])
 df_corpus_train.to_csv("data/pop/billboard_corpus_train.csv")
 df_corpus_test.to_csv("data/pop/billboard_corpus_test.csv")
+
+datafields = [("id", LABEL),
+                  ("text", TEXT)]
 
 train_dataset, test_dataset = data.TabularDataset.splits(
     path='./data/pop/', format='csv',
@@ -66,7 +69,7 @@ train_dataset, test_dataset = data.TabularDataset.splits(
 #%%
 
 #Build Vocab
-TEXT.build_vocab(music_train, vectors="glove.6B.200d")
+TEXT.build_vocab(train_dataset, vectors="glove.6B.200d", max_size=10000)
 #TEXT.build_vocab(music_train)
 
 # Iterator
@@ -222,20 +225,23 @@ for epoch in range(n_epochs):
 
     print('Epoch: {}, Training Loss: {:.4f}, Validation Loss: {:.4f}'.format(epoch, epoch_loss, test_loss))
 
+    for batch_chosen in range(BATCH_SIZE):
+        x_in = " ".join([TEXT.vocab.itos[i] for i in text[:, batch_chosen]])
+        prediction = model(text)
+        _, indices_max = prediction.max(dim=2)
+        x_out = " ".join([TEXT.vocab.itos[i] for i in indices_max[:, batch_chosen]])
+        print("Example : Batch ",batch_chosen)
+        print(x_in)
+        print(x_out)
+        print(" ")
+
 
 
 #%% What does the model in the end ????
 
-batch_chosen = 2
-
-x_in = " ".join([TEXT.vocab.itos[i] for i in text[:,batch_chosen]])
-prediction = model(text)
-_, indices_max = prediction.max(dim=2)
-x_out = " ".join([TEXT.vocab.itos[i] for i in indices_max[:, batch_chosen]])
+batch_chosen = 3
 
 
-print(x_in)
-print(x_out)
 
 
 #%%
