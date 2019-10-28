@@ -3,4 +3,6 @@ data/*
 *.zip
 .vector_cache/*.txt
 .vector_cache/*.txt.pt
+tutorials/*
 
+.idea/workspace.xml

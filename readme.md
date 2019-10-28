@@ -23,7 +23,11 @@ http://mlexplained.com/2018/02/15/language-modeling-tutorial-in-torchtext-practi
 -Language modeling task on rap data
 
 -Use W2V as embedding
+---> Dataviz du RAP
 
+BERT
+
+question : ligne par ligne ou mot par mot ???
 
 ### 3. Improvements
 
