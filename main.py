@@ -7,7 +7,7 @@ from torchtext import data
 print("Let's go !")
 
 # Parameters
-BATCH_SIZE = 4000
+BATCH_SIZE = 50
 max_size_vocab = 10000
 use_cuda = True
 train_ratio = 0.9
@@ -119,18 +119,34 @@ n_words_vocab = weight_matrix.size(0) # Number of tokens
 embedding_dimension = weight_matrix.size(1)
 
 # Model hyperparameters
-n_hidden = 200
-n_layers = 1
+#n_hidden = 200
+#n_layers = 1
 
 # Instanciate Model
-model = RNNModel(n_words_vocab,
-                 embedding_dimension, n_hidden, n_layers, BATCH_SIZE, use_cuda=use_cuda)
+#model = RNNModel(n_words_vocab,
+#                 embedding_dimension, n_hidden, n_layers, BATCH_SIZE, use_cuda=use_cuda)
+
 
 # Initialize model
 # TODO : I think encoding is initialized at W2V, and possibly modified during training ?
-model.encoder.weight.data.copy_(weight_matrix)
-if use_cuda:
-    model.cuda()
+#model.encoder.weight.data.copy_(weight_matrix)
+#if use_cuda:
+#    model.cuda()
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+from model.language_modeling import TransformerModel
+import torch.nn as nn
+ntokens = len(TEXT.vocab.stoi) # the size of vocabulary
+emsize = 200 # embedding dimension
+nhid = 200 # the dimension of the feedforward network model in nn.TransformerEncoder
+nlayers = 2 # the number of nn.TransformerEncoderLayer in nn.TransformerEncoder
+nhead = 2 # the number of heads in the multiheadattention models
+dropout = 0.2 # the dropout value
+model = TransformerModel(ntokens, emsize, nhead, nhid, nlayers, dropout).to(device)
+
+criterion = nn.CrossEntropyLoss()
+lr = 0.1 # learning rate
+optimizer = torch.optim.SGD(model.parameters(), lr=lr)
+scheduler = torch.optim.lr_scheduler.StepLR(optimizer, 1.0, gamma=0.95)
 
 
 
@@ -154,9 +170,9 @@ def print_batches(TEXT, BATCH_SIZE, text, model):
             break
 
 
-criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(), lr=1e-3, betas=(0.7, 0.99))
-n_tokens = weight_matrix.size(0)
+#criterion = nn.CrossEntropyLoss()
+#optimizer = optim.Adam(model.parameters(), lr=1e-3, betas=(0.7, 0.99))
+#n_tokens = weight_matrix.size(0)
 
 train_losses = []
 test_losses = []
@@ -169,11 +185,12 @@ for epoch in range(n_epochs):
     print("EPOCH ", epoch)
     epoch_loss = 0
     loss = 0
+    model.train()
     for n_iter, batch in enumerate(train_iterator):
         print("coucou train", n_iter)
         # reset the hidden state or else the model will try to backpropagate to the
         # beginning of the dataset, requiring lots of time and a lot of memory
-        model.reset_history()
+        #model.reset_history()
 
         optimizer.zero_grad()
 
@@ -194,7 +211,7 @@ for epoch in range(n_epochs):
             # shape (batch_size * sequence_length, n_tokens)
             # in accordance to this, we reshape the targets to be
             # shape (batch_size * sequence_length)
-            loss = criterion(prediction.cpu().view(-1, n_tokens), targets.view(-1))
+            loss = criterion(prediction.cpu().view(-1, ntokens), targets.view(-1))
             loss.backward()
 
             optimizer.step()
@@ -210,7 +227,7 @@ for epoch in range(n_epochs):
     model.eval()
     for n_iter, batch in enumerate(test_iterator):
         print("coucou test", n_iter)
-        model.reset_history()
+        #model.reset_history()
         text, targets = batch.text, batch.target
         #text, targets = batch.text[:-1], batch.text[1:]
 
@@ -220,7 +237,7 @@ for epoch in range(n_epochs):
 
         try:
             prediction = model(text)
-            loss = criterion(prediction.cpu().view(-1, n_tokens), targets.view(-1))
+            loss = criterion(prediction.cpu().view(-1, ntokens), targets.view(-1))
             test_loss += loss.data * text.size(0)
         except:
             print("Problem with ID", n_iter)
